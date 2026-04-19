@@ -1,0 +1,31 @@
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System Files
+.DS_Store
+*.pem
+
+# Agent/Tool State
+.gemini/
+.gsd/
+.planning/
+.system_generated/
+task.md
+implementation_plan.md
+walkthrough.md
