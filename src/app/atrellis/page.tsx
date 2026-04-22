@@ -166,6 +166,9 @@ export default function AtrellisPage() {
           <div className={styles.heroActions}>
             <a href="#demo" className={styles.ctaButton}>See it in action ↓</a>
             <a href="#pricing" className={styles.ctaButtonSecondary}>View pricing</a>
+            <a href="/api/atrellis-pdf" download className={styles.ctaButtonSecondary}>
+              ↓ Download PDF
+            </a>
           </div>
 
           <div className={styles.statsStrip}>
@@ -351,6 +354,29 @@ export default function AtrellisPage() {
               <p className={styles.tableNote}>
                 * ~$25/mo in hosting &amp; software licences is not included in the $888 setup fee.
               </p>
+              <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <a
+                  href="/api/atrellis-pdf"
+                  download
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    background: 'rgba(255,255,255,0.08)',
+                    border: '1px solid rgba(255,255,255,0.18)',
+                    color: 'rgba(255,255,255,0.8)',
+                    padding: '0.7rem 1.4rem',
+                    borderRadius: '9999px',
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    textDecoration: 'none',
+                    transition: 'background 0.2s',
+                    fontFamily: 'inherit',
+                  }}
+                >
+                  ↓ Download this proposal as PDF
+                </a>
+              </div>
             </div>
           </div>
         </section>
