@@ -1,136 +1,183 @@
 'use client';
 
-import React from 'react';
-import { useParams } from 'next/navigation';
-import { ARTICLES } from '@/lib/articles';
-import { ArrowLeft, User, ExternalLink, Play } from 'lucide-react';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { 
+  ArrowLeft, 
+  Share2, 
+  ExternalLink, 
+  Play, 
+  CheckCircle2, 
+  Maximize2 
+} from 'lucide-react';
+import { articles, Article } from '@/lib/articles';
+import { trackAndRedirect } from '@/lib/crm';
 
-import SEO from '@/components/SEO';
+export default function ArticleTemplate() {
+  const params = useParams();
+  const router = useRouter();
+  const slug = params.slug as string;
+  const [article, setArticle] = useState<Article | null>(null);
 
-export default function ArticlePage() {
-  const { slug } = useParams();
-  const article = ARTICLES.find(a => a.slug === slug);
+  useEffect(() => {
+    const found = articles.find(a => a.slug === slug);
+    if (found) setArticle(found);
+  }, [slug]);
 
-  if (!article) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <h1 className="text-2xl">Article Not Found</h1>
-      </div>
-    );
-  }
+  if (!article) return null;
+
+  const liquidTransition = {
+    duration: 1.2,
+    ease: [0.22, 1, 0.36, 1]
+  };
 
   return (
-    <div className="article-wrapper">
-      <SEO 
-        title={`${article.title} | Design Help Desk`}
-        description={article.subtitle}
-        image={article.coverImage}
-        article={{
-          publishedTime: article.publishedAt,
-          authorName: article.creatorName,
-          category: article.category
-        }}
-      />
-      <nav className="article-nav glass">
-        <Link href="/" className="back-link">
-          <ArrowLeft size={18} />
-          BACK TO MAGAZINE
+    <article className="article-wrapper" style={{ minHeight: '100vh', background: 'var(--background)' }}>
+      {/* Editorial Navigation */}
+      <nav className="main-nav" style={{ position: 'fixed', mixBlendMode: 'difference' }}>
+        <Link href="/" className="back-link" style={{ color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <ArrowLeft size={16} /> <span style={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: '0.7rem' }}>Index</span>
         </Link>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <Share2 size={18} color="white" cursor="pointer" />
+        </div>
       </nav>
 
-      {/* Article Hero */}
-      <header className="article-header">
+      {/* Cinematic Header */}
+      <header className="article-header" style={{ height: '90vh' }}>
         <div className="article-cover-container">
-          <img src={article.coverImage} alt={article.title} className="article-cover-bg" />
-          <div className="article-cover-overlay"></div>
+          <motion.img 
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+            src={article.coverImage} 
+            alt={article.title} 
+            className="article-cover-bg" 
+          />
+          <div className="article-cover-overlay" />
         </div>
         
-        <div className="article-title-stack">
-          <span className="article-category">{article.category}</span>
-          <h1 className="article-main-title serif italic">{article.title}</h1>
+        <motion.div 
+          className="article-title-stack"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={liquidTransition}
+        >
+          <span className="article-category editorial-serif">ISSUE 01 // {article.category}</span>
+          <h1 className="article-main-title editorial-serif">{article.title}</h1>
           <p className="article-subtitle">{article.subtitle}</p>
-        </div>
+        </motion.div>
       </header>
 
-      {/* Main Content Area */}
+      {/* Editorial Content */}
       <main className="article-main">
         <div className="article-layout">
-          {/* Creator Sidebar (Desktop) */}
-          <aside className="creator-sidebar glass">
-            <div className="creator-profile">
-              <div className="creator-avatar glass">
-                <User size={32} />
+          {/* Scientific/Design Context Sidebar */}
+          <aside className="creator-sidebar glass" style={{ padding: '40px', background: 'var(--glass-bg)' }}>
+            <div className="creator-profile" style={{ borderBottom: '1px solid var(--glass-border)' }}>
+              <div className="creator-avatar">
+                <CheckCircle2 size={32} color="var(--accent-blue)" />
               </div>
               <div className="creator-info">
-                <span className="label">Verified Creator</span>
-                <h4>{article.creatorName}</h4>
-                <a href={article.creatorLink} target="_blank" className="creator-link">
-                  VIEW FULL PORTFOLIO <ExternalLink size={12} className="ml-1" />
-                </a>
+                <span style={{ fontSize: '0.6rem', opacity: 0.5, letterSpacing: '0.1em' }}>ARCHITECTURAL CURATOR</span>
+                <h4 className="editorial-serif"> {article.author.name}</h4>
+                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>{article.author.role}</p>
               </div>
             </div>
-            
-            <div className="article-details">
+
+            <div style={{ marginTop: '30px' }}>
               <div className="detail-item">
-                <span className="label">Budget Tier</span>
-                <span className="value">{article.budgetTier} ({article.budgetRange})</span>
+                <span style={{ fontSize: '0.6rem', opacity: 0.4, display: 'block' }}>DESIGN THEME</span>
+                <p className="value">{article.category}</p>
               </div>
               <div className="detail-item">
-                <span className="label">Published</span>
-                <span className="value">{article.publishedAt}</span>
+                <span style={{ fontSize: '0.6rem', opacity: 0.4, display: 'block' }}>READ TIME</span>
+                <p className="value">4 MIN</p>
               </div>
+              
+              <button 
+                className="cta-btn" 
+                style={{ width: '100%', marginTop: '20px' }}
+                onClick={() => trackAndRedirect(article.slug, 'article_sidebar')}
+              >
+                Inquire Theme
+              </button>
             </div>
           </aside>
 
-          {/* Article Body */}
+          {/* Main Editorial Text */}
           <div className="article-body">
-            {article.content.map((block, idx) => {
+            {article.content.map((block, i) => {
               if (block.type === 'text') {
-                return <p key={idx} className="body-text">{block.body}</p>;
+                return (
+                  <motion.p 
+                    key={i} 
+                    className="body-text"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ ...liquidTransition, delay: i * 0.1 }}
+                  >
+                    {block.value}
+                  </motion.p>
+                );
               }
               if (block.type === 'image') {
                 return (
-                  <figure key={idx} className="body-figure">
-                    <img src={block.url} alt={block.caption} className="body-img" />
-                    <figcaption className="body-caption">
-                      {block.caption} 
-                      {block.creatorName && (
-                        <span className="credit"> / Image by {block.creatorName}</span>
-                      )}
-                    </figcaption>
+                  <figure key={i} className="body-figure">
+                    <motion.img 
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={liquidTransition}
+                      src={block.value} 
+                      alt="" 
+                      className="body-img" 
+                    />
+                    <figcaption className="body-caption">{block.caption}</figcaption>
                   </figure>
                 );
               }
               if (block.type === 'video') {
                 return (
-                  <div key={idx} className="body-video-container glass">
+                  <div key={i} className="body-video-container glass" style={{ border: '1px solid var(--glass-border)' }}>
                     <div className="video-placeholder">
-                      <Play size={48} className="text-blue" />
-                      <span>EXTERNAL MEDIA PREVIEW</span>
+                      <Play size={44} style={{ opacity: 0.5 }} />
+                      <span className="editorial-serif" style={{ letterSpacing: '0.1em', opacity: 0.6 }}>LIVING THEME PREVIEW</span>
                     </div>
                     <div className="video-caption">
-                      <p>{block.caption}</p>
-                      <button className="watch-btn glass">WATCH ORIGINAL CONTENT</button>
+                      <p>View Modern Minimalist Motion Study</p>
+                      <button className="watch-btn" onClick={() => window.open(block.value, '_blank')}>
+                        Open Video
+                      </button>
                     </div>
                   </div>
                 );
               }
-              if (block.type === 'quote') {
-                return (
-                  <blockquote key={idx} className="body-quote serif italic">
-                    "{block.text}"
-                    <cite>— {block.author}</cite>
-                  </blockquote>
-                );
-              }
               return null;
             })}
+
+            {/* Premium Editorial Conclusion */}
+            <div style={{ padding: '80px 0', borderTop: '1px solid var(--glass-border)', marginTop: '60px' }}>
+              <h3 className="editorial-serif" style={{ fontSize: '2.5rem', marginBottom: '20px' }}>
+                The Solvable Problem.
+              </h3>
+              <p className="body-text">
+                Every design challenge has an architectural solution. By understanding the pain points of 
+                modern living, we curate spaces that not only look stunning but function as a sanctuary.
+              </p>
+              <button 
+                className="cta-btn" 
+                style={{ background: 'none', border: '1px solid var(--accent)', padding: '20px 60px' }}
+              >
+                Request Custom Design Brief
+              </button>
+            </div>
           </div>
         </div>
       </main>
-
-    </div>
+    </article>
   );
 }

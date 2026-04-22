@@ -12,15 +12,37 @@ To bridge the gap between luxury design inspiration and budget-conscious executi
 - **Content**: File-based dynamic registry (`src/lib/articles.ts`)
 - **Animations**: Framer Motion & CSS Smooth Scroll
 
+## Editorial Design System
+The visual language is built on **Liquid Glass v4**, optimized for sensory luxury and atmospheric depth:
+- **Dual Themes**: Switchable between `Deep Midnight` (dark mode) and `Gallery White` (paper-style light mode). 
+- **Typography**: Utilizing `Cormorant Garamond` for editorial weight and `Outfit` for technical clarity.
+- **Motion**: Every reveal uses a "Slowing-Time" easing curve (`0.22, 1, 0.36, 1`) to simulate an expensive, relaxed reading experience.
+- **Showcase**: A responsive 5-element (PC) and 1-element (Mobile) horizontal slider for immersive design exploration.
+
 ## Modular Plugin Architecture
 This repository is architected for "Drop-in" integration into other developer ecosystems:
-- **ConversationEngine**: Can be integrated into portfolio sites via iframe or as a standalone React component.
-- **MagazineStack**: Designed to serve as a blog/article layer for external domains.
+
+### 1. The Iframe Method (Universal)
+To embed the Conversation Engine into any site (WordPress, Webflow, Shopify):
+```html
+<iframe 
+  src="https://your-helpdesk-domain.com/embed/conversation" 
+  width="100%" 
+  height="600px" 
+  style="border:none; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);"
+></iframe>
+```
+
+### 2. The React/Next.js Method (Native)
+Import the components directly into your other Atrellis projects:
+```tsx
+import { ConversationEngine } from 'design-help-desk/components';
+```
 
 ## Lead Capture & CRM
-Contains a modular `lib/crm.ts` for unified lead routing and redirect management.
+All high-intent interactions (Brief generation, Magazine redirects) are routed through `src/lib/crm.ts`. This allows you to track exactly which website the lead came from and what their design budget is before they even hit your CRM.
 
 ## Getting Started
-1. Clone the repository.
-2. Add `GEMINI_API_KEY` to `.env`.
-3. `npm install && npm run dev`.
+1. **Clone**: `git clone [your-repo-url]`
+2. **Configure**: Add `GEMINI_API_KEY` and `CRM_WEBHOOK_URL` to `.env`.
+3. **Run**: `npm install && npm run dev`.
