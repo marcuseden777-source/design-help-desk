@@ -123,12 +123,6 @@ const tableRows = [
   },
 ];
 
-function imgFallback(text: string) {
-  return (e: React.SyntheticEvent<HTMLImageElement>) => {
-    (e.target as HTMLImageElement).src = `https://placehold.co/200x80/f8fafc/1e293b?text=${text}`;
-  };
-}
-
 export default function AtrellisPage() {
   const [mode, setMode] = useState<BotMode>('lead');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -174,23 +168,13 @@ export default function AtrellisPage() {
         <div className={styles.navContainer}>
           <div className={styles.navInner}>
             <div className={styles.logoGroup}>
-              <img
-                src="/Untitled design.jpg"
-                alt="Atrellis"
-                className={styles.logoImg}
-                onError={imgFallback('Atrellis')}
-              />
+              <span className={styles.logoWordmark}>Atrellis</span>
               <div className={styles.navDivider} />
               <span className={styles.proposalLabel}>Proposal</span>
             </div>
             <div className={styles.poweredBy}>
               <span className={styles.poweredByLabel}>Powered by</span>
-              <img
-                src="/IMG_1803_2.jpg"
-                alt="Movara"
-                className={styles.movaraImg}
-                onError={imgFallback('Movara')}
-              />
+              <span className={styles.movaraWordmark}>Movara</span>
             </div>
           </div>
         </div>
@@ -198,22 +182,11 @@ export default function AtrellisPage() {
 
       {/* ── HEADER ── */}
       <header className={styles.pageHeader}>
-        <img
-          src="/Untitled design.jpg"
-          alt=""
-          aria-hidden="true"
-          className={styles.headerBgImg}
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-        />
         <div className={styles.headerContent}>
           <div className={styles.headerLogoWrap}>
             <div className={styles.headerLogoBox}>
-              <img
-                src="/Untitled design.jpg"
-                alt="Atrellis Logo"
-                className={styles.headerLogo}
-                onError={imgFallback('Atrellis')}
-              />
+              <div className={styles.headerLogoMark}>A</div>
+              <span className={styles.headerLogoText}>Atrellis</span>
             </div>
           </div>
           <h1 className={styles.h1}>
@@ -401,19 +374,9 @@ export default function AtrellisPage() {
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
           <div className={styles.footerLogos}>
-            <img
-              src="/Untitled design.jpg"
-              alt="Atrellis"
-              className={styles.footerLogoImg}
-              onError={imgFallback('Atrellis')}
-            />
+            <span className={styles.footerLogoWordmark}>Atrellis</span>
             <span className={styles.footerX}>×</span>
-            <img
-              src="/IMG_1803_2.jpg"
-              alt="Movara"
-              className={styles.footerLogoImg}
-              onError={imgFallback('Movara')}
-            />
+            <span className={styles.footerLogoWordmarkSub}>Movara</span>
           </div>
           <p className={styles.footerPrepared}>PREPARED EXCLUSIVELY FOR ANDREW</p>
           <p className={styles.footerYear}>Atrellis Design &amp; Build Partnership • 2024</p>
