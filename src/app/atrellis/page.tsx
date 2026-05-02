@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import styles from './atrellis.module.css';
 
 type BotMode = 'lead' | 'quote' | 'admin';
@@ -92,7 +92,7 @@ export default function AtrellisPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMessages([{ sender: 'bot', text: botConfigs[mode].greeting }]);
@@ -101,21 +101,24 @@ export default function AtrellisPage() {
   }, [mode]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     const msg = inputValue.trim();
     if (!msg || isLoading) return;
+    const currentMode = mode;
     setMessages(prev => [...prev, { sender: 'user', text: msg }]);
     setInputValue('');
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      setMessages(prev => [...prev, { sender: 'bot', text: getBotResponse(mode) }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: getBotResponse(currentMode) }]);
     }, 1200);
-  };
+  }, [inputValue, isLoading, mode]);
 
   const resetChat = () => {
     setMessages([{ sender: 'bot', text: botConfigs[mode].greeting }]);
@@ -254,7 +257,7 @@ export default function AtrellisPage() {
                     </button>
                   </div>
 
-                  <div className={styles.chatMessages}>
+                  <div className={styles.chatMessages} ref={messagesContainerRef}>
                     {messages.map((msg, i) => (
                       <div key={i} className={`${styles.chatMessage} ${msg.sender === 'user' ? styles.chatMessageUser : styles.chatMessageBot}`}>
                         <div className={`${styles.messageBubble} ${msg.sender === 'user' ? styles.messageBubbleUser : styles.messageBubbleBot}`}
@@ -271,7 +274,6 @@ export default function AtrellisPage() {
                         </div>
                       </div>
                     )}
-                    <div ref={messagesEndRef} />
                   </div>
 
                   <div className={styles.chatFooter}>
@@ -283,7 +285,7 @@ export default function AtrellisPage() {
                         placeholder="Type a message…"
                         className={styles.chatInput}
                       />
-                      <button type="submit" className={styles.sendBtn}>Send</button>
+                      <button type="submit" className={styles.sendBtn} disabled={isLoading}>{isLoading ? '…' : 'Send'}</button>
                     </form>
                   </div>
                 </div>
