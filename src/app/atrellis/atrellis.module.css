@@ -57,15 +57,11 @@
   --shadow-glow: 0 0 40px rgba(37,99,235,0.15);
 
   /* Layout */
-  position: fixed;
-  inset: 0;
+  min-height: 100dvh;
   background-color: var(--c-bg);
   color: var(--c-text-1);
   font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-  overflow-y: auto;
   overflow-x: hidden;
-  scroll-behavior: smooth;
-  z-index: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -765,8 +761,9 @@
   flex-shrink: 0;
 }
 
-.sendBtn:hover { box-shadow: 0 4px 16px rgba(37,99,235,0.45); transform: translateY(-1px); }
-.sendBtn:active { transform: scale(0.97); }
+.sendBtn:hover:not(:disabled) { box-shadow: 0 4px 16px rgba(37,99,235,0.45); transform: translateY(-1px); }
+.sendBtn:active:not(:disabled) { transform: scale(0.97); }
+.sendBtn:disabled { opacity: 0.5; cursor: default; }
 
 /* ── SECTION HEADER ───────────────────────────────────────── */
 
